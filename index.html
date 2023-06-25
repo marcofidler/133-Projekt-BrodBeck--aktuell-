@@ -9,14 +9,20 @@
 		/>
 	</head>
 	<body>
-		<div class="container">
-			<h1>Filialen</h1>
-			<label for="filialen">Filiale:</label>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+		<script src="script.js"></script>
 
+		<div class="container">
+			<h1>Stundenplan GIBM</h1>
+
+			<label>Berufsgruppe</label>
+			<select name="open" class="form-select" id="dropdownBeruf"></select>
+
+            <label>Klassenauswahl</label>
 			<select name="open" class="form-select" id="dropdown"></select>
+
 			<div id="data"></div>
 		</div>
-		<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-		<script src="request.js"></script>
+		
 	</body>
 </html>
