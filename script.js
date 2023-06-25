@@ -1,4 +1,5 @@
 
+let klassenId;
 
 document.addEventListener("DOMContentLoaded",
     function() {
@@ -6,12 +7,12 @@ document.addEventListener("DOMContentLoaded",
         const dropdownBeruf = document.getElementById("dropdownBeruf");
     
         // AJAX-Anfrage senden
-        const request = new XMLHttpRequest();
-        request.open("GET", "https://sandbox.gibm.ch/berufe.php?format=JSON", true);
+        const requestBeruf = new XMLHttpRequest();
+        requestBeruf.open("GET", "https://sandbox.gibm.ch/berufe.php?format=JSON", true);
 
-        request.onload = function() {
-        if (request.status >= 200 && request.status < 400) {
-            const resultjson = JSON.parse(request.responseText);
+        requestBeruf.onload = function() {
+        if (requestBeruf.status >= 200 && requestBeruf.status < 400) {
+            const resultjson = JSON.parse(requestBeruf.responseText);
             
             resultjson.forEach(x => {
             // Option-Element für jeden Beruf erstellen
@@ -23,15 +24,51 @@ document.addEventListener("DOMContentLoaded",
             dropdownBeruf.appendChild(option);
             });
         } else {
-            console.error("Fehler beim Abrufen der Daten.");
+            console.error("Fehler beim Abrufen der Daten aus Berufsgruppe.");
         }
         };
-        request.send();
+        requestBeruf.send();
 
+
+
+        //Aufruf bei ausgewähltem Beruf
         dropdownBeruf.addEventListener("change", function(){
-            let selectedOption = $("#dropdownBeruf option:selected").val(); //wert der ausgewählten option
-
             
+            const dropdownKlasse = document.getElementById("dropdownKlasse");
+            
+            let selectedOption = $("#dropdownBeruf option:selected").val(); //wert der ausgewählten option
+            let klassenOptionen = dropdownKlasse.options;
+
+            //Optionen werden bei nächster Änderung gelöscht
+            while (klassenOptionen.length > 0) {
+                klassenOptionen.remove(0);
+            }
+
+            const requestKlasse = new XMLHttpRequest();
+            requestKlasse.open("GET", "http://sandbox.gibm.ch/klassen.php?beruf_id=" + selectedOption, true);
+    
+            requestKlasse.onload = function() {
+            if (requestKlasse.status >= 200 && requestKlasse.status < 400) {
+                const resultjson = JSON.parse(requestKlasse.responseText);
+                
+                resultjson.forEach(x => {
+                // Option-Element für jeden Beruf erstellen
+                const option = document.createElement("option");
+                option.value = x.klasse_id;
+                option.text = x.klasse_name;
+                
+                klassenId = x.klasse_id;
+
+                // Option dem Dropdown hinzufügen
+                dropdownKlasse.appendChild(option);
+                });
+            } else {
+                console.error("Fehler beim Abrufen der Daten aus Klassen.");
+            }
+            };
+            requestKlasse.send();
+
+            showTafel();
 
         });
 
@@ -39,6 +76,10 @@ document.addEventListener("DOMContentLoaded",
     },
 );
 
+
+function showTafel(){
+    
+}
 
 
 $("#dropdownBeruf").change(function () { //wird aufgerufen sobald eine änderung im dropdown geschieht
