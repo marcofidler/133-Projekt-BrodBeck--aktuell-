@@ -1,11 +1,38 @@
+var klassenId;
+var week = 25;
+var year = 2023;
+var buttonB = document.getElementById("buttonBack");
+var buttonN = document.getElementById("buttonNext");
+let weekDisplay = document.getElementById("week");
 
-let klassenId;
+buttonN.addEventListener("click", function(){
+    week += 1;
+    if(week > 52){
+        week = 1;
+        year += 1;
+    }
+    weekDisplay.innerHTML = week + " / " + year;
+});
+
+buttonB.addEventListener("click", function(){
+    week -= 1;
+    if(week == 0){
+        week = 52;
+        year -= 1;
+    }
+    weekDisplay.innerHTML = week + " / " + year;
+});
+
 
 document.addEventListener("DOMContentLoaded",
     function() {
+        
+        weekDisplay.innerHTML = week + " / " + year;
+
         // Dropdown-Element auswählen
         const dropdownBeruf = document.getElementById("dropdownBeruf");
-    
+        
+
         // AJAX-Anfrage senden
         const requestBeruf = new XMLHttpRequest();
         requestBeruf.open("GET", "https://sandbox.gibm.ch/berufe.php?format=JSON", true);
@@ -30,15 +57,16 @@ document.addEventListener("DOMContentLoaded",
         requestBeruf.send();
 
 
+   
 
         //Aufruf bei ausgewähltem Beruf
         dropdownBeruf.addEventListener("change", function(){
             
             const dropdownKlasse = document.getElementById("dropdownKlasse");
-            
-            let selectedOption = $("#dropdownBeruf option:selected").val(); //wert der ausgewählten option
-            let klassenOptionen = dropdownKlasse.options;
 
+            let selectedOption = $("#dropdownBeruf option:selected").val(); //wert der ausgewählten option
+           
+            let klassenOptionen = dropdownKlasse.options;
             //Optionen werden bei nächster Änderung gelöscht
             while (klassenOptionen.length > 0) {
                 klassenOptionen.remove(0);
@@ -68,72 +96,40 @@ document.addEventListener("DOMContentLoaded",
             };
             requestKlasse.send();
 
-            showTafel();
+            dropdownKlasse.addEventListener("change", function(){
+                showTafel();
+            });
+            
 
         });
+
+     
 
 
     },
 );
 
-
 function showTafel(){
-    
+    let selectedOptionKlasse = $("#dropdownKlasse option:selected").val();
+    $.ajax({
+        url: "https://sandbox.gibm.ch/tafel.php?klasse_id=" + selectedOptionKlasse,
+        success: function (result){
+            if(result != null){
+                const resultDetails = JSON.parse(result.responseText);
+                const tafel = document.getElementById("data");
+                tafel.html(
+                    "<table class='table'><tr><th>Datum</th><th>Wochentag</th><th>Von</th><th>Bis</th>" + 
+                    "<th>Lehrer</th><th>Fach</th><th>Raum</th></tr>" +
+                    "<tr><td>" +
+                            +
+                            "</td><td>" +
+                            +
+                            "</td><td>" +
+                            +
+                            "</td></tr></table>"
+            );
+            }
+        }
+
+    });
 }
-
-
-$("#dropdownBeruf").change(function () { //wird aufgerufen sobald eine änderung im dropdown geschieht
-
-
-
-	$.ajax({ //Funktion für asynchrone Anfrage
-		url: "https://gibm.becknet.ch/warenhaus/getFiliale.php?format=JSON&filiale=" + 
-		selectedOption, //wert der ausgewählten option im JSON format
-		success: function (result) { //wenn erfolgreich Antwort kommt wird success aufgerufen, Antwort wird in result gespeichert
-			if (result != null) {
-				let resultjson = JSON.parse(result);
-				$("#data").html( //im DIV werden die Daten angezeigt / neue tabelle mit den wird erstellt
-					"<table class='table'><tr><th>Stadt</th><th>Strasse</th><th>Öffnungszeit</tr></tr> <tr><td>" +
-						resultjson[0].stadt +
-						"</td><td>" +
-						resultjson[0].strasse +
-						"</td><td>" +
-						resultjson[0].oeffnungszeiten +
-						"</td></tr></table>"
-				);
-			}
-		},
-	});
-})
-
-
-
-
-
-
-
-
-
-// $(document).ready(function () { //funktion wird ausgeführt sobald document geladen ist
-// 	$.ajax({ //Funktion für asynchrone Anfrage
-//         //Daten aus Berufsgruppe
-// 		url: "https://sandbox.gibm.ch/berufe.php", //aufruf auf URL wird gesendet
-// 		success: function (result) { //wenn erfolgreich, wird Antwort in result gespeichert und Funktion success wird aufgerufen
-// 			if (result != null) {
-
-// 				let resultjson = JSON.parse(result); //JSON datei wird den daten untergeordnet
-
-// 				resultjson.forEach((x) => { //dropsown optionen werde zusammengestellt
-// 					$("#dropdownBeruf").append(
-
-// 						'<option value="' + x.beruf_id + '">' + x.beruf_name + "</option>"
-// 					);
-// 				});
-// 			}
-// 		},
-
-
-
-// 	});
-// });
-
