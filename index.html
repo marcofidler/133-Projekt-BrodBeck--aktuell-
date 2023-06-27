@@ -19,17 +19,24 @@
 			<label>Berufsgruppe</label>
 			<select name="open" class="form-select" id="dropdownBeruf"></select>
 
-            <label>Klassenauswahl</label>
-			<select name="open" class="form-select" id="dropdownKlasse"></select>
+			<div id="klasseContainer" style="display: none;">
+				<label>Klassenauswahl</label>
+				<select name="open" class="form-select" id="dropdownKlasse"></select>
+			</div>
+
+           
 
 			<!-- Jahreswoche auswählen -->
             <h1></h1>
-			<div>
-				<button class="btn btn-primary mr-2" id="buttonBack">back</button>
+			<div id="buttonContainer" style="display: none;">
+				<div>
+					<button class="btn btn-primary mr-2" id="buttonBack">back</button>
+				</div>
+				<div id="week"></div>
+				
+				<button class="btn btn-primary ml-2" id="buttonNext">next</button>
 			</div>
-			<div id="week"></div>
 			
-			<button class="btn btn-primary ml-2" id="buttonNext">next</button>
 			
 			<div id="data"></div>
 		</div>
